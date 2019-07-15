@@ -65,7 +65,14 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class VideoCameraFragment extends Fragment
-        implements  View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+        implements  ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private int VideoDurationInMilliseconds = 5000;
+
+    private int VideoFrameRateInFPS = 24;
+
+
+
 
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
@@ -194,6 +201,25 @@ public class VideoCameraFragment extends Fragment
             if (null != mTextureView) {
                 configureTransform(mTextureView.getWidth(), mTextureView.getHeight());
             }
+
+            final Activity activity = getActivity();
+
+            Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
+            //toggleRecord();
+            startRecordingVideo();
+
+            Handler handler = new Handler();
+            Runnable runnable = new Runnable(){
+                public void run() {
+                    //Toast.makeText( activity, "Finished Recording", Toast.LENGTH_SHORT).show();
+                    //toggleRecord();
+                    stopRecordingVideo();
+                }
+            };
+            //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
+            handler.postDelayed(runnable, VideoDurationInMilliseconds);
+
+
         }
 
         @Override
@@ -280,11 +306,52 @@ public class VideoCameraFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
 
         //mButtonVideo = (Button) view.findViewById(R.id.video);
 //        mButtonVideo.setOnClickListener(this);
 //        view.findViewById(R.id.info).setOnClickListener(this);
+
+
+
+
+
+
+
+
+
+
+
+        /*
+        final Activity activity = getActivity();
+
+        Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
+        //toggleRecord();
+        startRecordingVideo();
+
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable(){
+            public void run() {
+                //Toast.makeText( activity, "Finished Recording", Toast.LENGTH_SHORT).show();
+                //toggleRecord();
+                stopRecordingVideo();
+            }
+        };
+        //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
+        handler.postDelayed(runnable, VideoDurationInMilliseconds);
+        */
+
+
+
+
+
+
+
+
+
+
+
     }
 
     @Override
@@ -305,8 +372,8 @@ public class VideoCameraFragment extends Fragment
         super.onPause();
     }
 
-    @Override
-    public void onClick(View view) {
+
+    public void toggleRecord() {
 
         if (mIsRecordingVideo) {
             stopRecordingVideo();
