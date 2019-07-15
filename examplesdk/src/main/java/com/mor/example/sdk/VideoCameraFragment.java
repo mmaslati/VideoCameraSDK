@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -38,6 +39,8 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -54,6 +57,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +74,7 @@ public class VideoCameraFragment extends Fragment
 
     private int VideoDurationInMilliseconds = 5000;
 
-    private int VideoFrameRateInFPS = 24;
+    private int VideoFrameRateInFPS = 24; // TODO: Proof between 20 to 60.
 
 
 
@@ -188,6 +193,51 @@ public class VideoCameraFragment extends Fragment
      */
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
+
+
+    private void shareVideo(){
+
+        Context context = getActivity();
+
+
+        // === VIDEO SHARE ===
+        Intent shareIntent = new Intent(
+                android.content.Intent.ACTION_SEND);
+        shareIntent.setType("video/mp4");
+
+//        shareIntent.putExtra(
+//                android.content.Intent.EXTRA_SUBJECT, title);
+//        shareIntent.putExtra(
+//                android.content.Intent.EXTRA_TITLE, title);
+
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mNextVideoAbsolutePath)));
+
+        //shareIntent
+                //.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        context.startActivity(Intent.createChooser(shareIntent,"Share this video"));
+//
+
+
+
+
+        /* === TEXT SHARE ===
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        //sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        //sendIntent.setType("text/plain");
+        sendIntent.setType("video/*");
+        sendIntent.putExtra(Intent.EXTRA_STREAM, mNextVideoAbsolutePath);
+        startActivity(sendIntent);
+        */
+
+
+
+
+    }
+
+
+
+
     /**
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its status.
      */
@@ -202,6 +252,10 @@ public class VideoCameraFragment extends Fragment
                 configureTransform(mTextureView.getWidth(), mTextureView.getHeight());
             }
 
+
+
+
+            // === STARTING RECORD ===
             final Activity activity = getActivity();
 
             Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
@@ -214,6 +268,7 @@ public class VideoCameraFragment extends Fragment
                     //Toast.makeText( activity, "Finished Recording", Toast.LENGTH_SHORT).show();
                     //toggleRecord();
                     stopRecordingVideo();
+                    shareVideo();
                 }
             };
             //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
@@ -312,41 +367,6 @@ public class VideoCameraFragment extends Fragment
         //mButtonVideo = (Button) view.findViewById(R.id.video);
 //        mButtonVideo.setOnClickListener(this);
 //        view.findViewById(R.id.info).setOnClickListener(this);
-
-
-
-
-
-
-
-
-
-
-
-        /*
-        final Activity activity = getActivity();
-
-        Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
-        //toggleRecord();
-        startRecordingVideo();
-
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable(){
-            public void run() {
-                //Toast.makeText( activity, "Finished Recording", Toast.LENGTH_SHORT).show();
-                //toggleRecord();
-                stopRecordingVideo();
-            }
-        };
-        //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
-        handler.postDelayed(runnable, VideoDurationInMilliseconds);
-        */
-
-
-
-
-
-
 
 
 
@@ -644,7 +664,7 @@ public class VideoCameraFragment extends Fragment
         }
         mMediaRecorder.setOutputFile(mNextVideoAbsolutePath);
         mMediaRecorder.setVideoEncodingBitRate(10000000);
-        mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoFrameRate(VideoFrameRateInFPS);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -745,8 +765,8 @@ public class VideoCameraFragment extends Fragment
                     Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
         }
-        mNextVideoAbsolutePath = null;
-        startPreview();
+        //mNextVideoAbsolutePath = null;
+        //startPreview();
     }
 
     /**
