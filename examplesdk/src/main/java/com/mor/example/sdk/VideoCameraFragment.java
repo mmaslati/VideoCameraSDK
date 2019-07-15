@@ -103,7 +103,7 @@ public class VideoCameraFragment extends Fragment
     /**
      * Button to record video
      */
-    private Button mButtonVideo;
+    //private Button mButtonVideo;
 
     /**
      * A reference to the opened {@link android.hardware.camera2.CameraDevice}.
@@ -281,9 +281,10 @@ public class VideoCameraFragment extends Fragment
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mButtonVideo = (Button) view.findViewById(R.id.video);
-        mButtonVideo.setOnClickListener(this);
-        view.findViewById(R.id.info).setOnClickListener(this);
+
+        //mButtonVideo = (Button) view.findViewById(R.id.video);
+//        mButtonVideo.setOnClickListener(this);
+//        view.findViewById(R.id.info).setOnClickListener(this);
     }
 
     @Override
@@ -633,7 +634,7 @@ public class VideoCameraFragment extends Fragment
                         @Override
                         public void run() {
                             // UI
-                            mButtonVideo.setText("Stop");
+                            //mButtonVideo.setText("Stop");
                             mIsRecordingVideo = true;
 
                             // Start recording
@@ -666,7 +667,7 @@ public class VideoCameraFragment extends Fragment
     private void stopRecordingVideo() {
         // UI
         mIsRecordingVideo = false;
-        mButtonVideo.setText("Record");
+        //mButtonVideo.setText("Record");
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
