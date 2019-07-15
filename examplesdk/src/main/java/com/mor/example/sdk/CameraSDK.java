@@ -16,8 +16,8 @@ public class CameraSDK {
 
             Intent intent = new Intent(context, FullScreenCamera.class);
 
-            intent.putExtra("Text_1", String.valueOf(videoDurationMili));
-            intent.putExtra("Text_2", String.valueOf(frameRate_FPS));
+            intent.putExtra("Duration", String.valueOf(videoDurationMili));
+            intent.putExtra("FPS", String.valueOf(frameRate_FPS));
 
             context.startActivity(intent);
 

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.mor.example.sdk.CameraSDK;
-import com.mor.example.sdk.CustomCameraView;
+
 import com.mor.example.sdk.FullScreenCamera;
 
 import androidx.appcompat.app.AppCompatActivity;
