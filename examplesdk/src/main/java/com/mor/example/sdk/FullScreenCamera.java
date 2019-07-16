@@ -1,24 +1,11 @@
 package com.mor.example.sdk;
-
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import static android.hardware.Camera.getNumberOfCameras;
+
 
 public class FullScreenCamera extends Activity {
-
-
 
 
     @Override
@@ -34,5 +21,17 @@ public class FullScreenCamera extends Activity {
 
 
         }
+        /*
+        final Activity a = this;
+
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable(){
+            public void run() {
+                //TESTING DO SOMETHING
+            }
+        };
+
+        handler.postDelayed(runnable, 5000);
+        */
     }
 }

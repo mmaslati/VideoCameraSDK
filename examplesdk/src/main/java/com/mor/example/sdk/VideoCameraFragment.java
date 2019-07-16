@@ -220,6 +220,19 @@ public class VideoCameraFragment extends Fragment
     }
 
 
+    private void deleteVideoFileAndExit() {
+
+        if(mNextVideoAbsolutePath != null) {
+            File file = new File(mNextVideoAbsolutePath);
+            boolean deleted = file.delete();
+
+            if (deleted) {
+                mNextVideoAbsolutePath = null;
+            }
+        }
+
+        getActivity().finish();
+    }
 
 
     /**
@@ -348,9 +361,6 @@ public class VideoCameraFragment extends Fragment
 
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
 
-        //mButtonVideo = (Button) view.findViewById(R.id.video);
-//        mButtonVideo.setOnClickListener(this);
-//        view.findViewById(R.id.info).setOnClickListener(this);
 
 
 
@@ -361,12 +371,32 @@ public class VideoCameraFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        startBackgroundThread();
-        if (mTextureView.isAvailable()) {
-            openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-        } else {
-            mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+
+
+        if(mNextVideoAbsolutePath == null) {
+            startBackgroundThread();
+            if (mTextureView.isAvailable()) {
+                openCamera(mTextureView.getWidth(), mTextureView.getHeight());
+            } else {
+                mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+            }
+        }else{
+
+            deleteVideoFileAndExit();
+
         }
+
+
+        //final Activity a = this.getActivity();
+
+//        Handler handler = new Handler();
+//        Runnable runnable = new Runnable(){
+//            public void run() {
+//                //((FullScreenCamera)getActivity()).killActivity();
+//            }
+//        };
+//
+//        handler.postDelayed(runnable, 3000);
     }
 
     @Override
@@ -400,13 +430,15 @@ public class VideoCameraFragment extends Fragment
      * Stops the background thread and its {@link Handler}.
      */
     private void stopBackgroundThread() {
-        mBackgroundThread.quitSafely();
-        try {
-            mBackgroundThread.join();
-            mBackgroundThread = null;
-            mBackgroundHandler = null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (mBackgroundThread != null) {
+            mBackgroundThread.quitSafely();
+            try {
+                mBackgroundThread.join();
+                mBackgroundThread = null;
+                mBackgroundHandler = null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
