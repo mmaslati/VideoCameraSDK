@@ -44,6 +44,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.StrictMode;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -197,41 +198,24 @@ public class VideoCameraFragment extends Fragment
 
     private void shareVideo(){
 
-        Context context = getActivity();
+        final Context context = getActivity();
 
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         // === VIDEO SHARE ===
         Intent shareIntent = new Intent(
                 android.content.Intent.ACTION_SEND);
         shareIntent.setType("video/mp4");
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-//        shareIntent.putExtra(
-//                android.content.Intent.EXTRA_SUBJECT, title);
-//        shareIntent.putExtra(
-//                android.content.Intent.EXTRA_TITLE, title);
+        File videoFile = new File(mNextVideoAbsolutePath);
 
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(mNextVideoAbsolutePath)));
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(videoFile));
 
-        //shareIntent
-                //.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        context.startActivity(Intent.createChooser(shareIntent,"Share this video"));
-//
-
-
-
-
-        /* === TEXT SHARE ===
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        //sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-        //sendIntent.setType("text/plain");
-        sendIntent.setType("video/*");
-        sendIntent.putExtra(Intent.EXTRA_STREAM, mNextVideoAbsolutePath);
-        startActivity(sendIntent);
-        */
-
-
-
+        shareIntent
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        context.startActivity(Intent.createChooser(shareIntent,"How would you like to share video?"));
 
     }
 
