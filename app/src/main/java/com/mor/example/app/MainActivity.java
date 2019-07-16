@@ -35,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("Mor","Run SDK Here...");
 
-                int videoDuration = 5000;
-                int frameRate_FPS = 24;
+                int videoDuration = 3500;
+                int frameRate_FPS = 30;
 
                 //View customView
 
-                CameraSDK.init( context, videoDuration, frameRate_FPS,null);
+                CameraSDK.startFullScreen( context, videoDuration, frameRate_FPS);
 
             }
         });
