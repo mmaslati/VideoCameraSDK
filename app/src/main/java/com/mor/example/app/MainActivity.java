@@ -20,6 +20,29 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    final Context context = this;
+
+    int videoDuration = 6000;
+    int frameRate_FPS = 20;
+
+    public void fullScreenSelected (){
+
+        CameraSDK.startFullScreen( context, videoDuration, frameRate_FPS);
+
+    }
+
+    public void customActivitySelected(){
+
+        Intent intent = new Intent(context, CustomViewActivity.class);
+
+        intent.putExtra("Duration", videoDuration);
+        intent.putExtra("FPS", frameRate_FPS);
+
+        startActivity(intent);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final Context context = this;
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -35,12 +58,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("Mor","Run SDK Here...");
 
-                int videoDuration = 3500;
-                int frameRate_FPS = 30;
 
-                //View customView
-
-                CameraSDK.startFullScreen( context, videoDuration, frameRate_FPS);
+                //fullScreenSelected ();
+                customActivitySelected();
 
             }
         });

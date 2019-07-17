@@ -1,6 +1,7 @@
 package com.mor.example.sdk;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 
@@ -8,17 +9,23 @@ import android.os.Bundle;
 
 public class FullScreenCamera extends Activity {
 
-    public int videoDuration;
-    public int videoFrameRate;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent   = getIntent();
-        videoDuration   = intent.getIntExtra("Duration", 5000);
-        videoFrameRate  = intent.getIntExtra("FPS", 24);
+
+        //videoDuration   = intent.getIntExtra("Duration", 5000);
+        //videoFrameRate  = intent.getIntExtra("FPS", 24);
+
+        SharedPreferences sp = getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        //editor.putString(KEY_NAME, name);
+        editor.putInt("duration",intent.getIntExtra("Duration", 5000));
+        editor.putInt("FPS",intent.getIntExtra("FPS", 24));
+
+        editor.apply();
 
         setContentView(R.layout.activity_camera);
 

@@ -25,6 +25,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
@@ -69,6 +70,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class VideoCameraFragment extends Fragment
         implements  ActivityCompat.OnRequestPermissionsResultCallback {
@@ -234,7 +237,6 @@ public class VideoCameraFragment extends Fragment
         getActivity().finish();
     }
 
-
     /**
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its status.
      */
@@ -354,6 +356,8 @@ public class VideoCameraFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_video_camera, container, false);
+
+
     }
 
     @Override
@@ -361,12 +365,11 @@ public class VideoCameraFragment extends Fragment
 
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
 
-        VideoDurationInMilliseconds = ((FullScreenCamera)getActivity()).videoDuration;
-        VideoFrameRateInFPS = ((FullScreenCamera)getActivity()).videoFrameRate;
+        SharedPreferences sp = getActivity().getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
 
+        VideoDurationInMilliseconds = sp.getInt("duration",5000);
 
-
-
+        VideoFrameRateInFPS = sp.getInt("FPS",24);
     }
 
     @Override
@@ -386,6 +389,7 @@ public class VideoCameraFragment extends Fragment
             deleteVideoFileAndExit();
 
         }
+
 
 
         //final Activity a = this.getActivity();
