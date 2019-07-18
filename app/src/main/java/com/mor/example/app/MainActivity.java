@@ -14,10 +14,12 @@ import com.mor.example.sdk.FullScreenCamera;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     final Context context = this;
     Activity thisActivity = this;
 
-    int videoDuration = 6000;
+    int videoDuration = 4000;
     int frameRate_FPS = 20;
 
     public void fullScreenSelected (){
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startFullscreen(){
 
-        CameraSDK.Start(thisActivity);
+        CameraSDK.Start(thisActivity, videoDuration, frameRate_FPS);
     }
 
     public void startCustomView(){
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void takeVideo(){
+
+        CameraSDK.takeVideo( thisActivity, videoDuration, frameRate_FPS );
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +82,42 @@ public class MainActivity extends AppCompatActivity {
                 //fullScreenSelected ();
                 //customActivitySelected();
 
-                startCustomView();
+                //startCustomView();
+
+                takeVideo();
+
+
+                Handler handler = new Handler();
+                Runnable runnable = new Runnable(){
+                    public void run() {
+                        CameraSDK.End();
+                    }
+                };
+
+                handler.postDelayed(runnable, 8500);
             }
         });
+
+        startCustomView ();
+
     }
+
+
+    /*
+     FINISHED:
+        //startFullscreen();
+
+         //startCustomView();
+
+     LEFT
+         //takeVideo();
+         //end
+
+
+     */
+
+
+
 
 
 }

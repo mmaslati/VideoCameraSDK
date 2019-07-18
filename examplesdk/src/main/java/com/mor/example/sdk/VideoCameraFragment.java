@@ -76,11 +76,11 @@ import static android.content.Context.MODE_PRIVATE;
 public class VideoCameraFragment extends Fragment
         implements  ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private int VideoDurationInMilliseconds;
+    //private int VideoDurationInMilliseconds;
 
-    private int VideoFrameRateInFPS; // TODO: Proof between 20 to 60.
+    //private int VideoFrameRateInFPS; // TODO: Proof between 20 to 60.
 
-
+    boolean isFullScreen;
 
 
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
@@ -197,17 +197,31 @@ public class VideoCameraFragment extends Fragment
      */
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
-    public void Start(){
+    public void takeVideo(Activity activity,int VideoDurationInMilliseconds, int  VideoFrameRateInFPS){
 
 
+        final Activity activity2 = activity;
 
+        Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
+        //toggleRecord();
+        startRecordingVideo(VideoFrameRateInFPS);
 
-
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable(){
+            public void run() {
+                Toast.makeText( activity2, "Finished Recording", Toast.LENGTH_SHORT).show();
+                //toggleRecord();
+                stopRecordingVideo();
+                //shareVideo();
+            }
+        };
+        //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
+        handler.postDelayed(runnable, VideoDurationInMilliseconds);
 
 
     }
 
-    private void shareVideo(){
+    public void shareVideo(){
 
         final Context context = getActivity();
 
@@ -242,7 +256,13 @@ public class VideoCameraFragment extends Fragment
             }
         }
 
-        getActivity().finish();
+        closeCamera();
+
+        if(isFullScreen){
+            getActivity().finish();
+        }
+
+
     }
 
     /**
@@ -260,6 +280,27 @@ public class VideoCameraFragment extends Fragment
             }
 
 
+
+            SharedPreferences sp = getActivity().getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
+
+            int VideoDurationInMilliseconds = sp.getInt("duration",0);
+            int VideoFrameRateInFPS = sp.getInt("FPS",0);
+
+            if (VideoDurationInMilliseconds != 0 && VideoFrameRateInFPS!=0){
+
+                isFullScreen = true;
+
+                takeVideo(getActivity(), VideoDurationInMilliseconds,  VideoFrameRateInFPS);
+            }else{
+
+                isFullScreen = false;
+            }
+
+
+            /*
+            VideoDurationInMilliseconds = sp.getInt("duration",5000);
+            VideoFrameRateInFPS = sp.getInt("FPS",24);
+            */
 
             /*
             // === STARTING RECORD ===
@@ -373,13 +414,6 @@ public class VideoCameraFragment extends Fragment
 
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
 
-        /*
-        SharedPreferences sp = getActivity().getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
-
-        VideoDurationInMilliseconds = sp.getInt("duration",5000);
-
-        VideoFrameRateInFPS = sp.getInt("FPS",24);
-        */
     }
 
     @Override
@@ -400,18 +434,6 @@ public class VideoCameraFragment extends Fragment
 
         }
 
-
-
-        //final Activity a = this.getActivity();
-
-//        Handler handler = new Handler();
-//        Runnable runnable = new Runnable(){
-//            public void run() {
-//                //((FullScreenCamera)getActivity()).killActivity();
-//            }
-//        };
-//
-//        handler.postDelayed(runnable, 3000);
     }
 
     @Override
@@ -421,16 +443,6 @@ public class VideoCameraFragment extends Fragment
         super.onPause();
     }
 
-
-    public void toggleRecord() {
-
-        if (mIsRecordingVideo) {
-            stopRecordingVideo();
-        } else {
-            startRecordingVideo();
-        }
-
-    }
 
     /**
      * Starts a background thread and its {@link Handler}.
@@ -682,7 +694,7 @@ public class VideoCameraFragment extends Fragment
         mTextureView.setTransform(matrix);
     }
 
-    private void setUpMediaRecorder() throws IOException {
+    private void setUpMediaRecorder(int VideoFrameRateInFPS) throws IOException {
         final Activity activity = getActivity();
         if (null == activity) {
             return;
@@ -717,13 +729,13 @@ public class VideoCameraFragment extends Fragment
                 + System.currentTimeMillis() + ".mp4";
     }
 
-    private void startRecordingVideo() {
+    private void startRecordingVideo(int VideoFrameRateInFPS) {
         if (null == mCameraDevice || !mTextureView.isAvailable() || null == mPreviewSize) {
             return;
         }
         try {
             closePreviewSession();
-            setUpMediaRecorder();
+            setUpMediaRecorder(VideoFrameRateInFPS);
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
