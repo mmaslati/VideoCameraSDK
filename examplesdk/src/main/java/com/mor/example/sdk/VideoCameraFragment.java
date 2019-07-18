@@ -197,7 +197,15 @@ public class VideoCameraFragment extends Fragment
      */
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
+    public void Start(){
 
+
+
+
+
+
+
+    }
 
     private void shareVideo(){
 
@@ -253,7 +261,7 @@ public class VideoCameraFragment extends Fragment
 
 
 
-
+            /*
             // === STARTING RECORD ===
             final Activity activity = getActivity();
 
@@ -272,7 +280,7 @@ public class VideoCameraFragment extends Fragment
             };
             //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
             handler.postDelayed(runnable, VideoDurationInMilliseconds);
-
+            */
 
         }
 
@@ -365,11 +373,13 @@ public class VideoCameraFragment extends Fragment
 
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
 
+        /*
         SharedPreferences sp = getActivity().getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
 
         VideoDurationInMilliseconds = sp.getInt("duration",5000);
 
         VideoFrameRateInFPS = sp.getInt("FPS",24);
+        */
     }
 
     @Override

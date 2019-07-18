@@ -48,7 +48,24 @@ public class CameraSDK {
     }
 
 
+    // Full Screen
+    public static void Start( Activity activity ){
 
+        Intent intent = new Intent(activity, FullScreenCamera.class);
+        activity.startActivity(intent);
+
+    }
+
+    // Full CustomView
+    public static void Start( Activity activity, int view ){
+
+
+        activity.getFragmentManager().beginTransaction()
+                .replace(view, VideoCameraFragment.newInstance())
+                .commit();
+
+
+    }
 
 
 
