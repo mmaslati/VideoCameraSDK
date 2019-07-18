@@ -5,19 +5,21 @@
 This is an example for an SDK I have created, following a task givin to me as part of an application for Android Mobile Development. Here is the task:
 ```
 
-1. Create SDK with the following:
+	1. Create SDK with the following:
 
-	a. Start - starts the camera on full screen or on the view given by the developer
+		a. Start - starts the camera on full screen or on the view given by the developer
 
-	b. takeVideo - takes video of period X seconds and frame rate Y
+		b. takeVideo - takes video of period X seconds and frame rate Y
 
-	c. End - open share option to send the video, after share deletes the video and close the camera view
+		c. End - open share option to send the video, after share deletes the video and close the camera view
 
-2. Create minimal sample to demonstrate the use of sample app
+	2. Create minimal sample to demonstrate the use of sample app
 
-3. The code should be uploaded to github
+	3. The code should be uploaded to github
 
 ```
+[For this SDK I chose to make use of the Camera2 SDK here.](https://github.com/googlesamples/android-Camera2Basic)
+
 ## Requirements to using my SDK:
 * Minimum Target SDK Version - 21.
 
