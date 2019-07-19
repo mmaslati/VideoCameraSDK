@@ -34,6 +34,7 @@
         </FrameLayout>
 
         <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -47,14 +48,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CustomView" />
+                android:text="CustomView"
+                android:onClick="radioButtonsHandler"/>
 
             <RadioButton
                 android:id="@+id/fullscreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="FullScreen" />
+                android:text="FullScreen"
+                android:onClick="radioButtonsHandler"/>
 
         </RadioGroup>
 
@@ -65,7 +68,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/editTextDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -74,7 +77,7 @@
                 android:inputType="number" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/editTextFPS"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -87,17 +90,20 @@
             android:id="@+id/Start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start" />
+            android:text="Start"
+            android:onClick="onStartClick"/>
         <Button
             android:id="@+id/takeVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="takeVideo" />
+            android:text="takeVideo"
+            android:onClick="onTakeVideoClick"/>
         <Button
-            android:id="@+id/End"
+            android:id="@+id/end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="End" />
+            android:text="End"
+            android:onClick="onEndClick"/>
 
 
 

@@ -213,6 +213,9 @@ public class VideoCameraFragment extends Fragment
                 //toggleRecord();
                 stopRecordingVideo();
                 //shareVideo();
+                if (isFullScreen){
+                    shareVideo();
+                }
             }
         };
         //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
@@ -290,7 +293,7 @@ public class VideoCameraFragment extends Fragment
 
                 isFullScreen = true;
 
-                takeVideo(getActivity(), VideoDurationInMilliseconds,  VideoFrameRateInFPS);
+                //takeVideo(getActivity(), VideoDurationInMilliseconds,  VideoFrameRateInFPS);
             }else{
 
                 isFullScreen = false;
