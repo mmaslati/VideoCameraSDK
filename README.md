@@ -33,7 +33,7 @@ allprojects {
   
     
     
-<b><u>Step 2. Add the dependency (Check for most updated release version. Example showing "v0.3")</u></b>  
+<b><u>Step 2. Add the dependency (Check for most updated release version. Example showing "v0.2")</u></b>  
   
 ```  
   
