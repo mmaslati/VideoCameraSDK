@@ -16,7 +16,7 @@
 
 package com.mor.example.sdk;
 
-import android.Manifest;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -39,9 +39,9 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.Manifest;
 import android.media.MediaRecorder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -54,14 +54,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ShareCompat;
-import androidx.core.content.FileProvider;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,13 +71,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class VideoCameraFragment extends Fragment
         implements  ActivityCompat.OnRequestPermissionsResultCallback {
 
-    //private int VideoDurationInMilliseconds;
-
-    //private int VideoFrameRateInFPS; // TODO: Proof between 20 to 60.
-
-    boolean isFullScreen;
 
 
+    // Camera2 Variables:
+    //***********************************************************************************
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
@@ -111,31 +103,17 @@ public class VideoCameraFragment extends Fragment
         INVERSE_ORIENTATIONS.append(Surface.ROTATION_270, 0);
     }
 
-    /**
-     * An {@link AutoFitTextureView} for camera preview.
-     */
+    //An {@link AutoFitTextureView} for camera preview.
     private AutoFitTextureView mTextureView;
 
-    /**
-     * Button to record video
-     */
-    //private Button mButtonVideo;
-
-    /**
-     * A reference to the opened {@link android.hardware.camera2.CameraDevice}.
-     */
+    //A reference to the opened {@link android.hardware.camera2.CameraDevice}.
     private CameraDevice mCameraDevice;
 
-    /**
-     * A reference to the current {@link android.hardware.camera2.CameraCaptureSession} for
-     * preview.
-     */
+    //A reference to the current {@link android.hardware.camera2.CameraCaptureSession} for preview.
     private CameraCaptureSession mPreviewSession;
 
-    /**
-     * {@link TextureView.SurfaceTextureListener} handles several lifecycle events on a
-     * {@link TextureView}.
-     */
+
+    //{@link TextureView.SurfaceTextureListener} handles several lifecycle events on a {@link TextureView}.
     private TextureView.SurfaceTextureListener mSurfaceTextureListener
             = new TextureView.SurfaceTextureListener() {
 
@@ -162,68 +140,58 @@ public class VideoCameraFragment extends Fragment
 
     };
 
-    /**
-     * The {@link android.util.Size} of camera preview.
-     */
+    //The {@link android.util.Size} of camera preview.
     private Size mPreviewSize;
 
-    /**
-     * The {@link android.util.Size} of video recording.
-     */
+    //The {@link android.util.Size} of video recording.
     private Size mVideoSize;
 
-    /**
-     * MediaRecorder
-     */
+    //MediaRecorder
     private MediaRecorder mMediaRecorder;
 
-    /**
-     * Whether the app is recording video now
-     */
-    private boolean mIsRecordingVideo;
-
-    /**
-     * An additional thread for running tasks that shouldn't block the UI.
-     */
+    //An additional thread for running tasks that shouldn't block the UI.
     private HandlerThread mBackgroundThread;
 
-    /**
-     * A {@link Handler} for running tasks in the background.
-     */
+    //A {@link Handler} for running tasks in the background.
     private Handler mBackgroundHandler;
 
-    /**
-     * A {@link Semaphore} to prevent the app from exiting before closing the camera.
-     */
+    //A {@link Semaphore} to prevent the app from exiting before closing the camera.
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
-    public void takeVideo(Activity activity,int VideoDurationInMilliseconds, int  VideoFrameRateInFPS){
+    // End of Camera2 Variables.
+    //***********************************************************************************
 
+
+    // View Type indicator.
+    boolean isFullScreen;
+
+    // Start taking video according to passed variables.
+    public void takeVideo(Activity activity,int VideoDurationInMilliseconds, int  VideoFrameRateInFPS){
 
         final Activity activity2 = activity;
 
         Toast.makeText( activity, getString(R.string.recording_started)+" "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
-        //toggleRecord();
+
         startRecordingVideo(VideoFrameRateInFPS);
 
         Handler handler = new Handler();
         Runnable runnable = new Runnable(){
             public void run() {
+
                 Toast.makeText( activity2, getString(R.string.recording_finished), Toast.LENGTH_SHORT).show();
-                //toggleRecord();
+
                 stopRecordingVideo();
-                //shareVideo();
+
                 if (isFullScreen){
+
                     shareVideo();
                 }
             }
         };
-        //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
         handler.postDelayed(runnable, VideoDurationInMilliseconds);
-
-
     }
 
+    // Opens Share Activity with video file path.
     public void shareVideo(){
 
         final Context context = getActivity();
@@ -247,11 +215,13 @@ public class VideoCameraFragment extends Fragment
 
     }
 
-
+    // Delete video file by path.
     private void deleteVideoFileAndExit() {
 
         if(mNextVideoAbsolutePath != null) {
+
             File file = new File(mNextVideoAbsolutePath);
+
             boolean deleted = file.delete();
 
             if (deleted) {
@@ -264,8 +234,6 @@ public class VideoCameraFragment extends Fragment
         if(isFullScreen){
             getActivity().finish();
         }
-
-
     }
 
     /**
@@ -282,8 +250,6 @@ public class VideoCameraFragment extends Fragment
                 configureTransform(mTextureView.getWidth(), mTextureView.getHeight());
             }
 
-
-
             SharedPreferences sp = getActivity().getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
 
             int VideoDurationInMilliseconds = sp.getInt("duration",0);
@@ -298,34 +264,6 @@ public class VideoCameraFragment extends Fragment
 
                 isFullScreen = false;
             }
-
-
-            /*
-            VideoDurationInMilliseconds = sp.getInt("duration",5000);
-            VideoFrameRateInFPS = sp.getInt("FPS",24);
-            */
-
-            /*
-            // === STARTING RECORD ===
-            final Activity activity = getActivity();
-
-            Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
-            //toggleRecord();
-            startRecordingVideo();
-
-            Handler handler = new Handler();
-            Runnable runnable = new Runnable(){
-                public void run() {
-                    //Toast.makeText( activity, "Finished Recording", Toast.LENGTH_SHORT).show();
-                    //toggleRecord();
-                    stopRecordingVideo();
-                    shareVideo();
-                }
-            };
-            //handler.postAtTime(runnable, System.currentTimeMillis()+VideoDurationInMilliseconds);
-            handler.postDelayed(runnable, VideoDurationInMilliseconds);
-            */
-
         }
 
         @Override
@@ -408,21 +346,17 @@ public class VideoCameraFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_video_camera, container, false);
-
-
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
 
-        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-
+        mTextureView = view.findViewById(R.id.texture);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
 
         if(mNextVideoAbsolutePath == null) {
             startBackgroundThread();
@@ -434,9 +368,7 @@ public class VideoCameraFragment extends Fragment
         }else{
 
             deleteVideoFileAndExit();
-
         }
-
     }
 
     @Override
@@ -766,9 +698,6 @@ public class VideoCameraFragment extends Fragment
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // UI
-                            //mButtonVideo.setText("Stop");
-                            mIsRecordingVideo = true;
 
                             // Start recording
                             mMediaRecorder.start();
@@ -798,21 +727,10 @@ public class VideoCameraFragment extends Fragment
     }
 
     private void stopRecordingVideo() {
-        // UI
-        mIsRecordingVideo = false;
-        //mButtonVideo.setText("Record");
+
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
-
-        Activity activity = getActivity();
-        if (null != activity) {
-            //Toast.makeText(activity, getString(R.string.video_saved) + mNextVideoAbsolutePath,
-                    //Toast.LENGTH_SHORT).show();
-
-        }
-        //mNextVideoAbsolutePath = null;
-        //startPreview();
     }
 
     /**
@@ -826,7 +744,6 @@ public class VideoCameraFragment extends Fragment
             return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
                     (long) rhs.getWidth() * rhs.getHeight());
         }
-
     }
 
     public static class ErrorDialog extends DialogFragment {
@@ -880,7 +797,5 @@ public class VideoCameraFragment extends Fragment
                             })
                     .create();
         }
-
     }
-
 }

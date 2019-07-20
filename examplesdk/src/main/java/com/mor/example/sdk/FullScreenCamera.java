@@ -13,17 +13,12 @@ public class FullScreenCamera extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent   = getIntent();
-
-        //videoDuration   = intent.getIntExtra("Duration", 5000);
-        //videoFrameRate  = intent.getIntExtra("FPS", 24);
-
         SharedPreferences sp = getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 
-        //editor.putString(KEY_NAME, name);
-        editor.putInt("duration",intent.getIntExtra("Duration", 5000));
-        editor.putInt("FPS",intent.getIntExtra("FPS", 24));
+        Intent intent   = getIntent();
+        editor.putInt("duration"    ,intent.getIntExtra("Duration", 5000));
+        editor.putInt("FPS"         ,intent.getIntExtra("FPS", 24));
 
         editor.apply();
 
@@ -36,17 +31,5 @@ public class FullScreenCamera extends Activity {
 
 
         }
-        /*
-        final Activity a = this;
-
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable(){
-            public void run() {
-                //TESTING DO SOMETHING
-            }
-        };
-
-        handler.postDelayed(runnable, 5000);
-        */
     }
 }

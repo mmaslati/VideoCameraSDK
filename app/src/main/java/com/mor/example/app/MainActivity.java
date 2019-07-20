@@ -2,42 +2,34 @@ package com.mor.example.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.mor.example.sdk.CameraSDK;
-
-import com.mor.example.sdk.FullScreenCamera;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import com.mor.example.sdk.CameraSDK;
 
 public class MainActivity extends AppCompatActivity {
 
+    // View Variables:
+    //******************
+
     RadioGroup radioGroup;
-    RadioButton radioButton;
-
-    boolean customViewStarted = false;
-
     Button takeVideoButton;
     Button endButton;
 
     EditText editTextDuration;
     EditText editTextFPS;
+
+
+    // Other Variables:
+    //******************
+
+    boolean customViewStarted = false;
 
     final Context context = this;
     Activity thisActivity = this;
@@ -47,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
     int selectedPreviewType = 0;
 
-    public void hideKeyboard() {
+
+
+    // Simply hides keyboard if open.
+    private void hideKeyboard() {
 
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
@@ -59,11 +54,10 @@ public class MainActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    // Radio buttons handler.
     public void radioButtonsHandler(View v){
 
         selectedPreviewType = radioGroup.getCheckedRadioButtonId();
-
-        //radioButton = findViewById(selectedPreviewType);
 
         if(findViewById(selectedPreviewType) == findViewById(R.id.fullscreen)){
 
@@ -83,7 +77,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean wasDurationAndFpsEntered(){
+    // Checking if Video Duration & Frames-Per-Seconds numbers entered.
+    private boolean wasDurationAndFpsEntered(){
 
         String durationText = editTextDuration.getText().toString();
         String fpsText = editTextFPS.getText().toString();
@@ -93,35 +88,21 @@ public class MainActivity extends AppCompatActivity {
         return wasIt;
     }
 
-    public void fullScreenSelected (){
-
-        CameraSDK.startFullScreen( context, videoDuration, frameRate_FPS);
-
-    }
-
-    public void customActivitySelected(){
-
-        Intent intent = new Intent(context, CustomViewActivity.class);
-
-        intent.putExtra("Duration", videoDuration);
-        intent.putExtra("FPS", frameRate_FPS);
-
-        startActivity(intent);
-    }
-
-
-    public void startFullscreen(){
+    // User selected to Start the video in full screen.
+    private void startFullscreen(){
 
         CameraSDK.Start(thisActivity, videoDuration, frameRate_FPS);
     }
 
-    public void startCustomView(){
+    // User selected to Start the video in current activity.
+    private void startCustomView(){
 
         customViewStarted = true;
 
         CameraSDK.Start( thisActivity, R.id.container );
     }
 
+    // Start Button click handler.
     public void onStartClick(View v){
 
         hideKeyboard();
@@ -158,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Take Video Button click handler.
     public void onTakeVideoClick(View v){
 
         hideKeyboard();
@@ -173,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // End Button click handler.
     public void onEndClick(View v){
 
         hideKeyboard();
@@ -186,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    public void takeVideo(){
+    // Take Video for CustomView.
+    private void takeVideo(){
 
         videoDuration = Integer.parseInt(editTextDuration.getText().toString());
         frameRate_FPS = Integer.parseInt(editTextFPS.getText().toString());
@@ -202,65 +185,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Initializing Views.
         radioGroup          = (RadioGroup) findViewById(R.id.radioGroup);
-
         takeVideoButton     = (Button) findViewById(R.id.takeVideo);
         endButton           = (Button) findViewById(R.id.end);
-
         editTextDuration    = (EditText) findViewById(R.id.editTextDuration);
         editTextFPS         = (EditText) findViewById(R.id.editTextFPS);
-
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Mor","Run SDK Here...");
-
-
-                //fullScreenSelected ();
-                //customActivitySelected();
-
-                //startCustomView();
-
-                takeVideo();
-
-
-                Handler handler = new Handler();
-                Runnable runnable = new Runnable(){
-                    public void run() {
-                        CameraSDK.End(thisActivity);
-                    }
-                };
-
-                handler.postDelayed(runnable, 8500);
-            }
-        });
-
-
-
-
-        //startCustomView ();
-
     }
-
-
-    /*
-     FINISHED:
-        //startFullscreen();
-
-         //startCustomView();
-
-     LEFT
-         //takeVideo();
-         //end
-
-
-     */
-
-
-
-
-
 }
