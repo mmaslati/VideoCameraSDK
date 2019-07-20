@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     RadioGroup radioGroup;
     RadioButton radioButton;
+
+    boolean customViewStarted = false;
 
     Button takeVideoButton;
     Button endButton;
@@ -43,6 +46,18 @@ public class MainActivity extends AppCompatActivity {
     int frameRate_FPS = 0;
 
     int selectedPreviewType = 0;
+
+    public void hideKeyboard() {
+
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = this.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     public void radioButtonsHandler(View v){
 
@@ -102,16 +117,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void startCustomView(){
 
+        customViewStarted = true;
+
         CameraSDK.Start( thisActivity, R.id.container );
     }
 
     public void onStartClick(View v){
 
-
+        hideKeyboard();
         if(
                 selectedPreviewType == 0
         ){
-            Toast.makeText(context,"You must select View Type", Toast.LENGTH_SHORT);
+            Toast.makeText(context,"You must select View Type", Toast.LENGTH_LONG).show();
         }else{
 
             if( selectedPreviewType==R.id.fullscreen){
@@ -119,7 +136,9 @@ public class MainActivity extends AppCompatActivity {
                 // START BY CHECKING "VIDEO DURATION" and "FRAME RATE"
                 boolean durationAndFpsEntered = wasDurationAndFpsEntered();
 
-                if (durationAndFpsEntered) {
+                if (!durationAndFpsEntered) {
+                    Toast.makeText(context,"Please enter both Duration and FPS", Toast.LENGTH_LONG).show();
+                }else{
 
                     videoDuration = Integer.parseInt(editTextDuration.getText().toString());
                     frameRate_FPS = Integer.parseInt(editTextFPS.getText().toString());
@@ -141,17 +160,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void onTakeVideoClick(View v){
 
-        if(!wasDurationAndFpsEntered()){
-            Toast.makeText(context,"Insert Duration and Frames Per Sec",Toast.LENGTH_SHORT);
-        }else{
+        hideKeyboard();
 
-            takeVideo();
+        if(!wasDurationAndFpsEntered()){
+            Toast.makeText(context,"Insert Duration and Frames Per Sec",Toast.LENGTH_SHORT).show();
+        }else{
+            if (!customViewStarted){
+                Toast.makeText(thisActivity,"You must start camera first",Toast.LENGTH_SHORT).show();
+            }else {
+                takeVideo();
+            }
         }
     }
 
     public void onEndClick(View v){
 
-        CameraSDK.End();
+        hideKeyboard();
+
+        if (!customViewStarted){
+            Toast.makeText(thisActivity,"You must start camera first",Toast.LENGTH_SHORT).show();
+        }else {
+            CameraSDK.End(thisActivity);
+
+        }
 
     }
 
@@ -199,13 +230,16 @@ public class MainActivity extends AppCompatActivity {
                 Handler handler = new Handler();
                 Runnable runnable = new Runnable(){
                     public void run() {
-                        CameraSDK.End();
+                        CameraSDK.End(thisActivity);
                     }
                 };
 
                 handler.postDelayed(runnable, 8500);
             }
         });
+
+
+
 
         //startCustomView ();
 

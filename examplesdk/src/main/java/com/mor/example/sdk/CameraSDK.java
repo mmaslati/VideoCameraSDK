@@ -54,15 +54,20 @@ public class CameraSDK {
     // Full Screen
     public static void Start( Activity activity, int videoDurationMili, int frameRate_FPS ){
 
-
-        Intent intent = new Intent(activity, FullScreenCamera.class);
-        intent.putExtra("Duration", videoDurationMili);
-        intent.putExtra("FPS", frameRate_FPS);
-        activity.startActivity(intent);
+        if(frameRate_FPS<1 || frameRate_FPS>35){
+            Toast.makeText(activity,"Check frame rate number and try again",Toast.LENGTH_LONG).show();
+        }else if(videoDurationMili<100 || videoDurationMili>300000){
+            Toast.makeText(activity,"Check video duration and try again",Toast.LENGTH_LONG).show();
+        }else {
+            Intent intent = new Intent(activity, FullScreenCamera.class);
+            intent.putExtra("Duration", videoDurationMili);
+            intent.putExtra("FPS", frameRate_FPS);
+            activity.startActivity(intent);
+        }
 
     }
 
-    // Full CustomView
+    // CustomView
     public static void Start( Activity activity, int view ){
 
         SharedPreferences sp = activity.getSharedPreferences("CameraSDKVars", MODE_PRIVATE);
@@ -92,16 +97,20 @@ public class CameraSDK {
             videoFragment.takeVideo(activity,videoDurationMili,frameRate_FPS);
 
         }else{
-            Toast.makeText(activity,"You must start Camera first",Toast.LENGTH_SHORT);
+            Toast.makeText(activity,"You must start camera first",Toast.LENGTH_SHORT);
         }
     }
 
-    public static void End(){
+    public static void End(Activity activity){
 
         if(videoFragment == null){
             videoFragment = VideoCameraFragment.newInstance();
         }
         videoFragment.shareVideo();
+
+        activity.getFragmentManager().beginTransaction().remove(videoFragment).commit();
+
+        videoFragment =  null;
     }
 
 }

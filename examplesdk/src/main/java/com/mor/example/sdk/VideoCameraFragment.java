@@ -202,14 +202,14 @@ public class VideoCameraFragment extends Fragment
 
         final Activity activity2 = activity;
 
-        Toast.makeText( activity, "Record started for "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
+        Toast.makeText( activity, getString(R.string.recording_started)+" "+String.valueOf(VideoDurationInMilliseconds)+" milisec", Toast.LENGTH_SHORT).show();
         //toggleRecord();
         startRecordingVideo(VideoFrameRateInFPS);
 
         Handler handler = new Handler();
         Runnable runnable = new Runnable(){
             public void run() {
-                Toast.makeText( activity2, "Finished Recording", Toast.LENGTH_SHORT).show();
+                Toast.makeText( activity2, getString(R.string.recording_finished), Toast.LENGTH_SHORT).show();
                 //toggleRecord();
                 stopRecordingVideo();
                 //shareVideo();
@@ -293,7 +293,7 @@ public class VideoCameraFragment extends Fragment
 
                 isFullScreen = true;
 
-                //takeVideo(getActivity(), VideoDurationInMilliseconds,  VideoFrameRateInFPS);
+                takeVideo(getActivity(), VideoDurationInMilliseconds,  VideoFrameRateInFPS);
             }else{
 
                 isFullScreen = false;
@@ -575,7 +575,7 @@ public class VideoCameraFragment extends Fragment
             mMediaRecorder = new MediaRecorder();
             manager.openCamera(cameraId, mStateCallback, null);
         } catch (CameraAccessException e) {
-            Toast.makeText(activity, "Cannot access the camera.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, getString(R.string.error_camera_access), Toast.LENGTH_SHORT).show();
             activity.finish();
         } catch (NullPointerException e) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
@@ -636,7 +636,7 @@ public class VideoCameraFragment extends Fragment
                         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                             Activity activity = getActivity();
                             if (null != activity) {
-                                Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity, getString(R.string.error_camera_configure), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }, mBackgroundHandler);
@@ -780,7 +780,7 @@ public class VideoCameraFragment extends Fragment
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
                     Activity activity = getActivity();
                     if (null != activity) {
-                        Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, getString(R.string.error_camera_configure), Toast.LENGTH_SHORT).show();
                     }
                 }
             }, mBackgroundHandler);
@@ -807,9 +807,9 @@ public class VideoCameraFragment extends Fragment
 
         Activity activity = getActivity();
         if (null != activity) {
-            Toast.makeText(activity, "Video saved: " + mNextVideoAbsolutePath,
-                    Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
+            //Toast.makeText(activity, getString(R.string.video_saved) + mNextVideoAbsolutePath,
+                    //Toast.LENGTH_SHORT).show();
+
         }
         //mNextVideoAbsolutePath = null;
         //startPreview();

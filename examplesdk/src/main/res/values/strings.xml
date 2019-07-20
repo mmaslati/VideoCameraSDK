@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Example SDK</string>
+
+    <string name="recording_started">Recording started for </string>
+    <string name="recording_finished">Finished Recording</string>
+    <string name="video_saved">Video saved: </string>
+
+    <string name="error_camera_access">Cannot access the camera</string>
+    <string name="error_camera_configure">Failed to configure camera</string>
+
+
+
 </resources>
