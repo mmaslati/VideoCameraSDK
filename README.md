@@ -15,7 +15,7 @@ This is an example for an SDK I have created, following a task given to me as pa
 
 ```  
 * [For this SDK I chose to make use of the Camera2 SDK here.](https://github.com/googlesamples/android-Camera2Basic)  
-* I misunderstood the assignment at first. To view old implementation of this SDK (v0.2), scroll to bottom.
+* I misunderstood the assignment at first. To view old implementation of this SDK (v0.1), scroll to bottom.
 ## Requirements to using my SDK:  
 * Minimum Target SDK Version - 21.  
   
@@ -38,7 +38,7 @@ allprojects {
 ```  
   
 dependencies {  
-	implementation 'com.github.mmaslati:VideoCameraSDK:v0.3'}  
+	implementation 'com.github.mmaslati:VideoCameraSDK:v0.2'}  
   
 ```  
 That's it.  
